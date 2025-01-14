@@ -101,6 +101,3 @@ def convert_to_json(lines, start_hour, end_hour):
     }
 
     return subject
-
-if __name__ == '__main__':
-    read_subjects('../test_schedules/MAIS2_segundo_cuatri.png')
