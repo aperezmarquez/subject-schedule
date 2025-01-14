@@ -14,24 +14,28 @@ def get_critical_points(width, height):
     return (left_img_error, top_img_error, column_width, row_height)
 
 def check_subject(subject_row, subject_info):
-    start_hour = 7 + subject_row*2
+    start_hour = 9 + subject_row*2
     end_hour = start_hour + 2
 
+    # Split the text from the image into lines and remove all spaces and empty lines
     lines = subject_info.splitlines()
     lines = [l for l in lines if l.strip()]
-    if (len(lines) < 5):
+    # If the length is smaller than 1, then there is no subject
+    if (len(lines) < 1):
         return
 
-    i=0
-    if (lines[1].replace(".", "").replace(":", "").replace("0", "").strip().isdigit()):
-        print("change")
-        i += 1
+    # We don't need the times of the class, so we remove them
+    if (lines[0].replace(".", "").replace(":", "").strip().isdigit()):
+        del lines[0]
 
-    print(lines[i])
-    print(lines[i+1])
-    print(lines[i+2])
-    print(lines[i+3])
-    print(lines[i+4])
+    if (lines[-1].replace(".", "").replace(":", "").strip().isdigit()):
+        del lines[-1]
+
+    print(str(start_hour) + " - " + str(end_hour) + ": ")
+    print(lines[0])
+    print(lines[1])
+    print(lines[2])
+    print(lines[3])
     print("\n")
 
 # Reads all the subjects of the calendar
@@ -44,7 +48,7 @@ def read_subjects(fileName):
     # Sacamos los puntos criticos
     left_img_error, top_img_error, column_width, row_height = get_critical_points(width, height)
 
-    for i in range(0, 6):
+    for i in range(0, 5):
         crop_subject(img, left_img_error, top_img_error, column_width, row_height, i)
         
 
@@ -62,6 +66,9 @@ def crop_subject(img, left_img_error, top_img_error, column_width, row_height, d
         # Asign coordinates and crop the img
         coordinates = (x_start_point, y_start_point, x_end_point, y_end_point)
         img_cropped = img.crop(coordinates)
+
+        # Saves all cropped images
+        #img_cropped.save('images/subject_' + str(day) + '_' + str(j) + '.png')
     
         text = tsr.image_to_string(img_cropped, lang='spa')
         check_subject(j, text)
